@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealSight AI - Edge Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #050505;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .dashboard {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #111;
+            border: 1px solid #333;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.1);
+        }
+        .video-panel {
+            position: relative;
+            width: 800px;
+            border: 1px solid #333;
+        }
+        video, canvas {
+            width: 100%;
+            display: block;
+        }
+        canvas {
+            position: absolute;
+            top: 0; left: 0; pointer-events: none;
+        }
+        .insights-panel {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .stat-box {
+            background: #0a0a0a;
+            border: 1px solid #00ffcc;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+        }
+        .stat-label {
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: #888;
+        }
+        .system-status {
+            font-size: 12px;
+            color: #00ffcc;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="video-panel">
+            <video id="videoPlayer" src="/assets/retail_video.mp4" autoplay loop muted playsinline></video>
+            <canvas id="glassCanvas"></canvas>
+        </div>
+        
+        <div class="insights-panel">
+            <div class="system-status" id="status">SYS_STATUS: OFFLINE</div>
+            
+            <div class="stat-box">
+                <div class="stat-label">LIVE PEOPLE COUNT</div>
+                <div class="stat-value" id="personCount">0</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-label">VEHICLES DETECTED</div>
+                <div class="stat-value" id="vehicleCount">0</div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-label">EDGE LATENCY (MS)</div>
+                <div class="stat-value" id="latencyStat">~40</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

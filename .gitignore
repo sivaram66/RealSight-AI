@@ -1,0 +1,49 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# VS Code settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Model files (optional - large files)
+*.pt
+*.pth
+
+# Build / dist
+build/
+dist/
+*.egg-info/
+
+# Testing
+.coverage
+htmlcov/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Frontend (if using node)
+node_modules/
+
+assests/*.mp4
+
+
+
+# Model
+*.pt
