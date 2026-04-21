@@ -3,7 +3,6 @@ import asyncio
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from backend.core.config import state
 from backend.services.inference import engine
-from backend.services.llm import analyze_behavior # Import the new service
 
 router = APIRouter()
 
@@ -11,12 +10,9 @@ router = APIRouter()
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     cap = cv2.VideoCapture(state.CURRENT_STREAM_SOURCE) 
-    frame_counter = 0
     
-    # Background task handler
-    async def update_summary(frame_to_analyze):
-        new_summary = await analyze_behavior(frame_to_analyze)
-        state.CURRENT_SUMMARY = new_summary
+    frame_counter = 0
+    frame_skip = 3  # Keeps the AI perfectly in sync with React video
     
     try:
         while True:
@@ -27,17 +23,20 @@ async def websocket_endpoint(websocket: WebSocket):
                 
             frame_counter += 1
             
-            # Every ~6 seconds, grab a copy of the frame and send it to Groq asynchronously
-            if frame_counter % 150 == 0:
-                asyncio.create_task(update_summary(frame.copy()))
+            # Frame Skipping Engine
+            if frame_counter % frame_skip != 0:
+                await asyncio.sleep(0.001)
+                continue
                 
+            # Process frame with YOLOv8
             payload = engine.process_frame(frame)
-            
-            # Inject the current LLM summary into the WebSocket JSON
-            payload["summary"] = state.CURRENT_SUMMARY 
+
+            # Add timestamp for sync
+            current_time_sec = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
+            payload["timestamp"] = current_time_sec
             
             await websocket.send_json(payload)
-            await asyncio.sleep(0.04) 
+            await asyncio.sleep(0.01) 
             
     except WebSocketDisconnect:
         print("Client disconnected.")

@@ -20,4 +20,5 @@ export interface WebSocketPayload {
     detections: Detection[];
     insights: Insights;
     summary?: string;
+    timestamp?: number;
 }

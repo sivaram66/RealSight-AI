@@ -15,6 +15,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     // This dynamically picks the right URL based on where it's running
+    setDetections([]);  
+    setInsights({ person: 0, vehicle: 0, total_objects: 0 });
     const API_BASE = import.meta.env.VITE_API_URL || "localhost:8000";
     const wsUrl = window.location.protocol === "https:" 
         ? `wss://${API_BASE}/ws` 
@@ -28,6 +30,15 @@ export default function Dashboard() {
       if (data.summary) setSummary(data.summary);
       setDetections(data.detections);
       setInsights(data.insights);
+
+      // const videoElement = document.querySelector('video');
+      // if (videoElement && data.timestamp) {
+      //   const diff = Math.abs(videoElement.currentTime - data.timestamp);
+      //   // If the video is more than 0.3 seconds out of sync with the AI, snap it back
+      //   if (diff > 0.3) {
+      //     videoElement.currentTime = data.timestamp;
+      //   }
+      // }
     };
 
     ws.onclose = () => setStatus('OFFLINE');
@@ -68,21 +79,7 @@ export default function Dashboard() {
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <StatCard label="Live People Count" value={insights.person} />
           <StatCard label="Vehicles Detected" value={insights.vehicle} />
-          {/* <StatCard label="Edge Latency (ms)" value="~40" /> */}
-          {/* New Activity Log Card */}
-          <div style={{ padding: '1.5rem', background: '#fff', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-              Live Activity Log (Groq VLM)
-            </div>
-            <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-main)', lineHeight: '1.5' }}>
-              {summary}
-            </div>
-          </div>
-          
-          <div style={{ marginTop: 'auto', padding: '1.5rem', background: 'var(--surface-color)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-            <h3 style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>Node Info</h3>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Model: YOLOv8-Nano (Quantized)<br/>Inference: Edge<br/>Framerate: 25 FPS</p>
-          </div>
+        
         </div>
 
       </main>
