@@ -43,7 +43,7 @@ node_modules/
 
 assests/*.mp4
 
-
+*.mp4
 
 # Model
 *.pt
