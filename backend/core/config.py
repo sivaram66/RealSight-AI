@@ -10,6 +10,7 @@ os.makedirs(ASSETS_DIR, exist_ok=True)
 class AppState:
     # Set the default video path (Make sure CAM-2.mp4 is inside your assets folder!)
     CURRENT_STREAM_SOURCE = os.path.join(ASSETS_DIR, "CAM-2.mp4")
+    CURRENT_SUMMARY = "Initializing behavioral analysis..."
 
 # Create a single state instance to be shared across all files
 state = AppState()

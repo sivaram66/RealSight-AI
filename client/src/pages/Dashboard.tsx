@@ -5,11 +5,13 @@ import Uploader from '../components/Uploader';
 import VideoStream from '../components/VideoStream';
 import type{ WebSocketPayload, Detection, Insights } from '../types';
 
+
 export default function Dashboard() {
   const [detections, setDetections] = useState<Detection[]>([]);
   const [insights, setInsights] = useState<Insights>({ person: 0, vehicle: 0, total_objects: 0 });
   const [status, setStatus] = useState<'CONNECTING' | 'SECURE' | 'OFFLINE'>('CONNECTING');
   const [videoKey, setVideoKey] = useState(0); // Changes when a new video is uploaded
+  const [summary, setSummary] = useState("Initializing behavioral analysis...");
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8000/ws');
@@ -18,6 +20,7 @@ export default function Dashboard() {
     
     ws.onmessage = (event) => {
       const data: WebSocketPayload = JSON.parse(event.data);
+      if (data.summary) setSummary(data.summary);
       setDetections(data.detections);
       setInsights(data.insights);
     };
@@ -60,7 +63,16 @@ export default function Dashboard() {
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <StatCard label="Live People Count" value={insights.person} />
           <StatCard label="Vehicles Detected" value={insights.vehicle} />
-          <StatCard label="Edge Latency (ms)" value="~40" />
+          {/* <StatCard label="Edge Latency (ms)" value="~40" /> */}
+          {/* New Activity Log Card */}
+          <div style={{ padding: '1.5rem', background: '#fff', borderRadius: '8px', border: '1px solid var(--border-color)', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+            <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+              Live Activity Log (Groq VLM)
+            </div>
+            <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-main)', lineHeight: '1.5' }}>
+              {summary}
+            </div>
+          </div>
           
           <div style={{ marginTop: 'auto', padding: '1.5rem', background: 'var(--surface-color)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
             <h3 style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>Node Info</h3>

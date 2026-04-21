@@ -19,4 +19,5 @@ export interface Insights {
 export interface WebSocketPayload {
     detections: Detection[];
     insights: Insights;
+    summary?: string;
 }
