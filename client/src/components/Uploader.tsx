@@ -1,8 +1,11 @@
 import { useState } from 'react';
 
+// 1. We grab the dynamic URL from Vercel's environment variables
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 export default function Uploader({ onUploadSuccess }: { onUploadSuccess: () => void }) {
   const [isUploading, setIsUploading] = useState(false);
-
+  
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -12,7 +15,8 @@ export default function Uploader({ onUploadSuccess }: { onUploadSuccess: () => v
     formData.append("file", file);
 
     try {
-      const res = await fetch('http://localhost:8000/api/upload', {
+      // 2. We use the dynamic API_BASE instead of the hardcoded localhost
+      const res = await fetch(`${API_BASE}/api/upload`, {
         method: 'POST',
         body: formData
       });

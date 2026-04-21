@@ -30,6 +30,10 @@ app.add_middleware(
 async def health_check():
     return {"status": "online"}
 
+@app.head("/health")
+async def health_check_head():
+    return Response(status_code=200)
+
 # 6. Include Routers
 app.include_router(video_router)
 app.include_router(ws_router)
