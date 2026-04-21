@@ -17,7 +17,7 @@ async def analyze_behavior(frame):
         
         # 3. Fire to LLaMA 3.2 Vision on Groq
         completion = await client.chat.completions.create(
-            model="llama-3.2-11b-vision-preview",
+            model="llama-3.1-8b-instant",
             messages=[
                 {
                     "role": "user",

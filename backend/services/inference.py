@@ -7,7 +7,11 @@ class InferenceEngine:
     def process_frame(self, frame):
         # Strict confidence thresholds and Class 0 (Person) filtering
         results = self.model.track(frame, persist=True, verbose=False, conf=0.65, classes=[0])
-        
+        if not results[0].boxes:
+            return {
+                "detections": [], # Explicitly empty list clears the red lines
+                "insights": {"person": 0, "vehicle": 0, "total_objects": 0}
+            }
         boxes_data = []
         frame_insights = {"person": 0, "vehicle": 0, "total_objects": 0}
         

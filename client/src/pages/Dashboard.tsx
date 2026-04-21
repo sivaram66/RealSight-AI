@@ -14,8 +14,13 @@ export default function Dashboard() {
   const [summary, setSummary] = useState("Initializing behavioral analysis...");
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8000/ws');
+    // This dynamically picks the right URL based on where it's running
+    const API_BASE = import.meta.env.VITE_API_URL || "localhost:8000";
+    const wsUrl = window.location.protocol === "https:" 
+        ? `wss://${API_BASE}/ws` 
+        : `ws://${API_BASE}/ws`;
 
+    const ws = new WebSocket(wsUrl);
     ws.onopen = () => setStatus('SECURE');
     
     ws.onmessage = (event) => {
