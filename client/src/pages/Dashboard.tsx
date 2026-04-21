@@ -5,22 +5,20 @@ import Uploader from '../components/Uploader';
 import VideoStream from '../components/VideoStream';
 import type{ WebSocketPayload, Detection, Insights } from '../types';
 
-
 export default function Dashboard() {
   const [detections, setDetections] = useState<Detection[]>([]);
   const [insights, setInsights] = useState<Insights>({ person: 0, vehicle: 0, total_objects: 0 });
   const [status, setStatus] = useState<'CONNECTING' | 'SECURE' | 'OFFLINE'>('CONNECTING');
-  const [videoKey, setVideoKey] = useState(0); // Changes when a new video is uploaded
+  const [videoKey, setVideoKey] = useState(0); 
   const [summary, setSummary] = useState("Initializing behavioral analysis...");
 
   useEffect(() => {
-    // This dynamically picks the right URL based on where it's running
     setDetections([]);  
     setInsights({ person: 0, vehicle: 0, total_objects: 0 });
-    const API_BASE = import.meta.env.VITE_API_URL || "localhost:8000";
-    const wsUrl = window.location.protocol === "https:" 
-        ? `wss://${API_BASE}/ws` 
-        : `ws://${API_BASE}/ws`;
+    
+    // --- EMERGENCY DEADLINE FIX: Hardcoded Production URL ---
+    // This guarantees the browser connects perfectly to Render
+    const wsUrl = "wss://realsight-api.onrender.com/ws";
 
     const ws = new WebSocket(wsUrl);
     ws.onopen = () => setStatus('SECURE');
@@ -30,25 +28,15 @@ export default function Dashboard() {
       if (data.summary) setSummary(data.summary);
       setDetections(data.detections);
       setInsights(data.insights);
-
-      // const videoElement = document.querySelector('video');
-      // if (videoElement && data.timestamp) {
-      //   const diff = Math.abs(videoElement.currentTime - data.timestamp);
-      //   // If the video is more than 0.3 seconds out of sync with the AI, snap it back
-      //   if (diff > 0.3) {
-      //     videoElement.currentTime = data.timestamp;
-      //   }
-      // }
     };
 
     ws.onclose = () => setStatus('OFFLINE');
     ws.onerror = () => setStatus('OFFLINE');
 
-    return () => ws.close(); // Cleanup when user leaves page
-  }, [videoKey]); // Reconnect WebSocket if videoKey changes
+    return () => ws.close(); 
+  }, [videoKey]); 
 
   const handleUploadSuccess = () => {
-    // Force a reload of the Video player and WebSocket
     setVideoKey(prev => prev + 1);
   };
 
@@ -79,7 +67,6 @@ export default function Dashboard() {
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <StatCard label="Live People Count" value={insights.person} />
           <StatCard label="Vehicles Detected" value={insights.vehicle} />
-        
         </div>
 
       </main>
