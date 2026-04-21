@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Download the YOLO model directly from your Google Drive link
 # This prevents GitHub from blocking your push due to large file sizes!
-RUN gdown --id 1HJbaMj-Q9CxmaDEyWtrdgwvdapnPBTcp -O /app/yolov8s.pt
+RUN gdown 1HJbaMj-Q9CxmaDEyWtrdgwvdapnPBTcp -O /app/yolov8s.pt
 
 # Copy the rest of your backend code into the container
 COPY ./backend /app/backend
